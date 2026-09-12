@@ -22,9 +22,9 @@ class MurderTownGame extends BaseGame {
 				this.input.gamepads,
 				0,
 			);
-			const keyboardControls = MeepleControls.fromKeyboard(
-				this.input.keyboard,
-			);
+			// const keyboardControls = MeepleControls.fromKeyboard(
+			// 	this.input.keyboard,
+			// );
 
 			const player1Controls = controllerControls;
 			// const player1Controls = keyboardControls;
