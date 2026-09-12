@@ -1,3 +1,4 @@
+import type { Axis } from './core/input/Axis';
 import Axis2d from './core/input/Axis2d';
 import { Button } from './core/input/Button';
 import { ButtonsAxis } from './core/input/ButtonsAxis';
@@ -6,15 +7,23 @@ import type { GamepadCode } from './core/input/gamepad/Gamepad';
 import { XboxGamepadAxisMap } from './core/input/gamepad/XboxGamepadAxisMap';
 import { XboxGamepadButtonMap } from './core/input/gamepad/XboxGamepadButtonMap';
 import Keyboard from './core/input/keyboard/Keyboard';
+import type Manual from './core/input/manual/Manual';
+import type ManualAxis from './core/input/manual/ManualAxis';
+import type ManualButton from './core/input/manual/ManualButton';
 
 export interface MeepleControls {
-	Walk: Axis2d;
+	Walk: Axis2d<Axis>;
 	Interact: Button;
 	Pause: Button;
 
 	Vibrate?: GamepadHapticActuator;
 }
 
+export interface ManualMeepleControls extends MeepleControls {
+	Walk: Axis2d<ManualAxis>;
+	Interact: ManualButton;
+	Pause: ManualButton;
+}
 export namespace MeepleControls {
 	export function fromGamepad(
 		gamepad: Gamepad,
@@ -58,6 +67,23 @@ export namespace MeepleControls {
 			.getButton('ControlLeft')
 			.merge(keyboard.getButton('Space'));
 		const esc = keyboard.getButton('Escape');
+
+		return {
+			Walk: arrows,
+			Interact: ctrl,
+			Pause: esc,
+			Vibrate: undefined,
+		};
+	}
+
+	export function fromManual(manual: Manual): ManualMeepleControls {
+		const horizontal = manual.createAxis('Horizontal');
+		const vertical = manual.createAxis('Vertical');
+
+		const arrows = new Axis2d(horizontal, vertical);
+
+		const ctrl = manual.createButton('Interact');
+		const esc = manual.createButton('Pause');
 
 		return {
 			Walk: arrows,
