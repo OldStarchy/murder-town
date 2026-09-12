@@ -10,11 +10,11 @@ import bird_r2 from '../assets/bird_r2.png';
 import bird_r3 from '../assets/bird_r3.png';
 import bird_r4 from '../assets/bird_r4.png';
 import bird_r5 from '../assets/bird_r5.png';
+import bushImage from '../assets/bush.png';
+import fountainImage from '../assets/fountain.png';
 import meepleImage from '../assets/meeple.png';
 import sheet1Url from '../assets/sheet1.png';
-import treeImage from '../assets/bird_f1.png';
-import fountainImage from '../assets/bird_f1.png';
-import bushImage from '../assets/bird_f1.png';
+import treeImage from '../assets/tree.png';
 
 import Sprite from './core/Sprite';
 
