@@ -2,6 +2,7 @@ import z from 'zod';
 import CircleCollider from '../../collider/CircleCollider';
 import type GameObject from '../../GameObject';
 import type { Vec2Like } from '../../math/Vec2';
+import Vec2 from '../../math/Vec2';
 import Module from '../../Module';
 import { Err, Ok, type Result } from '../../monad/Result';
 import type { Serializable } from '../../Serializer';
@@ -20,7 +21,7 @@ export default class CircleCollider2d
 {
 	static readonly displayName = 'CircleCollider2d';
 
-	accessor center: Vec2Like = { x: 0, y: 0 };
+	accessor center: Vec2 = Vec2.zero;
 	accessor radius: number = 10;
 
 	override getCollider() {
@@ -75,8 +76,7 @@ export default class CircleCollider2d
 		const collider = context.gameObject.addModule(CircleCollider2d);
 
 		if (center !== undefined) {
-			const [centerX, centerY] = center;
-			collider.center = { x: centerX, y: centerY };
+			collider.center = new Vec2(...center);
 		}
 		collider.radius = radius;
 
