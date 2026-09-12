@@ -60,7 +60,8 @@ export default class Decoration
 
 		context.translate(...this.owner.transform.position.xy);
 
-		sprite.blit(context, -20, -20, 40, 40);
+		const [w, h] = sprite.sourceRect.wh;
+		sprite.blit(context, -w / 2, -h / 2, w, h);
 	}
 
 	static {
