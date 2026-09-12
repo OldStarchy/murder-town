@@ -21,8 +21,8 @@ export namespace MeepleControls {
 		gamepadIndex: GamepadCode,
 	): MeepleControls {
 		const leftStick = new Axis2d(
-			gamepad.getAxis(gamepadIndex, XboxGamepadAxisMap.LeftStickX),
-			gamepad.getAxis(gamepadIndex, XboxGamepadAxisMap.LeftStickY),
+			gamepad.getAxis(gamepadIndex, XboxGamepadAxisMap.LeftStickX, 0.3),
+			gamepad.getAxis(gamepadIndex, XboxGamepadAxisMap.LeftStickY, 0.3),
 		);
 
 		const gamepadX = gamepad.getButton(
