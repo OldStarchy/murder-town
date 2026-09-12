@@ -18,10 +18,16 @@ class MurderTownGame extends BaseGame {
 		let reset = this.input.keyboard.getButton('KeyR');
 
 		{
-			const player1Controls = MeepleControls.fromGamepad(
+			const controllerControls = MeepleControls.fromGamepad(
 				this.input.gamepads,
 				0,
 			);
+			const keyboardControls = MeepleControls.fromKeyboard(
+				this.input.keyboard,
+			);
+
+			const player1Controls = controllerControls;
+			// const player1Controls = keyboardControls;
 			reset = reset.merge(player1Controls.Pause);
 
 			this.input.defineSchema<MeepleControls>(
@@ -43,17 +49,13 @@ class MurderTownGame extends BaseGame {
 			);
 		}
 
-		{
-			const player2Controls = MeepleControls.fromKeyboard(
-				this.input.keyboard,
-			);
-			reset = reset.merge(player2Controls.Pause);
+		// {
 
-			this.input.defineSchema<MeepleControls>(
-				'Player 1',
-				player2Controls,
-			);
-		}
+		// 	this.input.defineSchema<MeepleControls>(
+		// 		'Player 1',
+		// 		player2Controls,
+		// 	);
+		// }
 
 		this.input.defineButton(Bindings.Restart, reset);
 	}
@@ -99,6 +101,25 @@ class MurderTownGame extends BaseGame {
 						$type: 'MeepleBehavior',
 						data: {
 							playerIndex: 0,
+						} satisfies MeepleBehaviorDto,
+					},
+				],
+			});
+
+			this.spawnPrefab({
+				version: 1,
+				layer: Layer.Player,
+				tags: [TAG_PLAYER],
+				name: 'Player 2',
+				transform: [400, 200],
+				modules: [
+					{
+						$type: 'MeepleRenderer',
+					},
+					{
+						$type: 'MeepleBehavior',
+						data: {
+							playerIndex: 1,
 						} satisfies MeepleBehaviorDto,
 					},
 				],
