@@ -45,6 +45,8 @@ export default class MeepleRenderer extends Module {
 	override update() {
 		super.update();
 
+		this.owner.layer = this.transform.position.y;
+
 		const movement = Math.sign(
 			this.control.velocity.x || this.control.velocity.y,
 		);

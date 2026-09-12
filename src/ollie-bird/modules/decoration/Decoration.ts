@@ -53,6 +53,10 @@ export default class Decoration
 
 	readonly [ReactInterop.schema] = decorationSchema;
 
+	protected override update(): void {
+		this.owner.layer = this.transform.position.y;
+	}
+
 	protected override render(context: CanvasRenderingContext2D): void {
 		const sprite = Resources.instance.sprite.get(this.image);
 
