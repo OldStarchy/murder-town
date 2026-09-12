@@ -14,8 +14,9 @@ export const collider2dDtoSchema = z
 		widgetStrokeStyle: z.string().optional(),
 		widgetLineWidth: z.number().min(0).optional(),
 		widgetLineDash: z.array(z.number().min(0)).optional(),
+		collisionMask: z.number().int().default(-1),
 	})
-	.optional();
+	.default({ collisionMask: -1 });
 
 export type Collider2dDto = z.input<typeof collider2dDtoSchema>;
 
@@ -59,6 +60,8 @@ export default abstract class Collider2d
 	 * The line dash pattern for this colliders gizmo.
 	 */
 	accessor widgetLineDash: number[] = [];
+
+	accessor collisionMask: number = -1;
 
 	/**
 	 * Creates and returns a collider shape for this module based on the
@@ -172,11 +175,39 @@ export default abstract class Collider2d
 	 */
 	static collidingWith(
 		collider: ColliderShape,
+		collisionMask = -1,
 	): (obj: GameObject) => boolean {
 		return (obj: GameObject) => {
 			return obj
 				.getModulesByType(Collider2d)
 				.filter((m) => m.enabled)
+				.filter((m) => (m.collisionMask & collisionMask) !== 0)
+				.map((m) => m.getCollider())
+				.some((otherCollider) =>
+					collider.checkCollision(otherCollider),
+				);
+		};
+	}
+
+	/**
+	 * Filters objects that are colliding with the given collider.
+	 *
+	 * The self-collisions are excluded.
+	 */
+	static collidingWithCollider(
+		module: Collider2d,
+		collisionMask = module.collisionMask,
+	): (obj: GameObject) => boolean {
+		return (obj: GameObject) => {
+			const collider = module.getCollider();
+			return obj
+				.getModulesByType(Collider2d)
+				.filter(
+					(m) =>
+						m !== module &&
+						m.enabled &&
+						(m.collisionMask & collisionMask) !== 0,
+				)
 				.map((m) => m.getCollider())
 				.some((otherCollider) =>
 					collider.checkCollision(otherCollider),
@@ -191,6 +222,7 @@ export default abstract class Collider2d
 			widgetStrokeStyle: module.widgetStrokeStyle,
 			widgetLineWidth: module.widgetLineWidth,
 			widgetLineDash: module.widgetLineDash,
+			collisionMask: module.collisionMask,
 		};
 	}
 
@@ -209,17 +241,16 @@ export default abstract class Collider2d
 		const data = parsed.unwrap();
 		const { collider } = context;
 
-		if (data) {
-			if (data.renderWidget) collider.renderWidget = data.renderWidget;
-			if (data.widgetFillStyle)
-				collider.widgetFillStyle = data.widgetFillStyle;
-			if (data.widgetStrokeStyle)
-				collider.widgetStrokeStyle = data.widgetStrokeStyle;
-			if (data.widgetLineWidth)
-				collider.widgetLineWidth = data.widgetLineWidth;
-			if (data.widgetLineDash)
-				collider.widgetLineDash = data.widgetLineDash;
-		}
+		if (data.renderWidget) collider.renderWidget = data.renderWidget;
+		if (data.widgetFillStyle)
+			collider.widgetFillStyle = data.widgetFillStyle;
+		if (data.widgetStrokeStyle)
+			collider.widgetStrokeStyle = data.widgetStrokeStyle;
+		if (data.widgetLineWidth)
+			collider.widgetLineWidth = data.widgetLineWidth;
+		if (data.widgetLineDash) collider.widgetLineDash = data.widgetLineDash;
+
+		collider.collisionMask = data.collisionMask;
 
 		return Ok();
 	}
