@@ -64,7 +64,7 @@ export default function LevelPicker({ onClose }: { onClose?: () => void }) {
 	useEffect(() => {
 		if (!game) return;
 
-		loadLevel('default');
+		// loadLevel('default');
 	}, [game, loadLevel]);
 
 	const loadEmpty = () => {

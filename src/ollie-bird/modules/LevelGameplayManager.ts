@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import Flag from '../../Flag';
-import { Bindings } from '../OllieBirdGame';
+import { Bindings } from '../MurderTownGame';
 import { TAG_LEVEL_OBJECT, TAG_LEVEL_STRUCTURE, TAG_PLAYER } from '../const';
 import type { EventMap } from '../core/EventMap';
 import GameObject, { type GameObjectDto } from '../core/GameObject';
@@ -8,7 +8,7 @@ import Module from '../core/Module';
 import { Err, Ok, Result } from '../core/monad/Result';
 import CheckpointManager from './CheckpointManager';
 import GameTimer from './GameTimer';
-import BirdBehavior from './bird/BirdBehavior';
+import MeepleControl from './meeple/MeepleControl';
 
 export type LevelGameplayManagerEvents = EventMap<{
 	levelInit: void;
@@ -27,7 +27,7 @@ export default class LevelGameplayManager extends Module {
 	#restartKey = this.game.input.getButton(Bindings.Restart);
 	#stopKey = this.game.input.keyboard.getButton('KeyQ');
 
-	readonly #birdDied = new Flag();
+	readonly #allPlayersDied = new Flag();
 
 	constructor(owner: GameObject) {
 		super(owner);
@@ -39,7 +39,7 @@ export default class LevelGameplayManager extends Module {
 	override update(): void {
 		if (this.#pauseKey.isPressed) {
 			this.game
-				.findModulesByType(BirdBehavior)
+				.findModulesByType(MeepleControl)
 				.forEach((b) => b.togglePause());
 		}
 
@@ -56,7 +56,7 @@ export default class LevelGameplayManager extends Module {
 	}
 
 	override afterUpdate(): void {
-		if (this.#birdDied.reset()) {
+		if (this.#allPlayersDied.reset()) {
 			if (this.game.findObjectsByTag(TAG_PLAYER).next().done) {
 				this.game.waitFrames(0).then(() => {
 					this.#event$.next({ type: 'levelComplete' });
@@ -77,12 +77,12 @@ export default class LevelGameplayManager extends Module {
 		});
 	}
 
-	handleBirdReachedGoal(_bird: GameObject) {
+	handlePlayerReachedGoal(_bird: GameObject) {
 		this.#event$.next({ type: 'levelComplete' });
 	}
 
-	handleBirdDied(_bird: GameObject) {
-		this.#birdDied.set();
+	handlePlayerDied(_player: GameObject) {
+		this.#allPlayersDied.set();
 	}
 
 	getLevelData(): string {

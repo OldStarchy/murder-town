@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import OllieBirdGame from '../ollie-bird/OllieBirdGame';
+import MurderTownGame from '../ollie-bird/MurderTownGame';
 import GameCanvas from './GameCanvas';
 import { GameContext } from './GameContext';
 import LevelPicker from './LevelPicker';
@@ -8,10 +8,10 @@ import Layout from './layouts/Layout';
 
 function OllieBirdGameComponent() {
 	const canvasRef = useRef<{ focus(): void }>(null);
-	const [game, setGame] = useState<OllieBirdGame>();
+	const [game, setGame] = useState<MurderTownGame>();
 
 	useEffect(() => {
-		const game = new OllieBirdGame();
+		const game = new MurderTownGame();
 		game.start();
 		setGame(game);
 

@@ -10,6 +10,8 @@ import bird_r2 from '../assets/bird_r2.png';
 import bird_r3 from '../assets/bird_r3.png';
 import bird_r4 from '../assets/bird_r4.png';
 import bird_r5 from '../assets/bird_r5.png';
+//TODO: Update
+import meepleImage from '../assets/bird_f1.png';
 import sheet1Url from '../assets/sheet1.png';
 
 import Sprite from './core/Sprite';
@@ -107,6 +109,8 @@ export default class Resources {
 
 		const birdF1 = new Sprite(bird_f1);
 		this.instance.sprite.register('bird-icon', birdF1);
+
+		this.instance.sprite.register('meeple', new Sprite(meepleImage));
 
 		this.instance.birdSpriteSet.register(
 			'birdFrontSprites',

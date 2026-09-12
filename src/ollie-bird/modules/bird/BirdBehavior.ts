@@ -153,7 +153,7 @@ export default class BirdBehavior extends Module {
 				.findObjectsByTag(TAG_GOAL)
 				.some(Collider2d.collidingWith(myCollider.getCollider()))
 		) {
-			this.levelGameplayManager.handleBirdReachedGoal(this.owner);
+			this.levelGameplayManager.handlePlayerReachedGoal(this.owner);
 			this.togglePause();
 
 			//spawn explosions in a circle
@@ -215,7 +215,7 @@ export default class BirdBehavior extends Module {
 	}
 
 	die() {
-		this.levelGameplayManager.handleBirdDied(this.owner);
+		this.levelGameplayManager.handlePlayerDied(this.owner);
 		this.#vibrationActuator?.playEffect('dual-rumble', {
 			duration: 600,
 			startDelay: 0,
