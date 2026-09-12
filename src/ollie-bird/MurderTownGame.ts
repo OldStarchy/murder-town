@@ -2,6 +2,7 @@ import { Layer, TAG_EDITOR_OBJECT, TAG_PLAYER } from './const';
 import BaseGame from './core/BaseGame';
 import { MeepleControls } from './MeepleControls';
 import type { MeepleBehaviorDto } from './modules/meeple/MeepleBehavior';
+import { createDecorationPrefab } from './prefabs/createDecorationPrefab';
 
 // Eager-load all the modules so that they're registered in the serializer and available for spawning prefabs
 import.meta.glob('./modules/**/*.ts', { eager: true });
@@ -73,6 +74,8 @@ class MurderTownGame extends BaseGame {
 			name: 'Level Gameplay Manager',
 			modules: [{ $type: 'LevelGameplayManager' }],
 		});
+
+		this.spawnPrefab(createDecorationPrefab({ x: 400, y: 400 }));
 
 		// const ic = this.spawnPrefab({
 		// 	version: 1,

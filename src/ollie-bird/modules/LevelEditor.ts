@@ -3,6 +3,7 @@ import GameObject from '../core/GameObject';
 import Module from '../core/Module';
 import CreateBombTool from './editor-tools/CreateBombTool';
 import CreateCheckpointTool from './editor-tools/CreateCheckpointTool';
+import CreateDecorationTool from './editor-tools/CreateDecorationTool';
 import CreateWalkerSpawnerTool from './editor-tools/CreateWalkerSpawnerTool';
 import CreateWallTool from './editor-tools/CreateWallTool';
 import DeleteThingsTool from './editor-tools/DeleteThingsTool';
@@ -15,6 +16,7 @@ enum EditorMode {
 	SetGoal,
 	BuildWalls,
 	CreateBomb,
+	CreateDecoration,
 	AddCheckpoint,
 	AddBaddie,
 	DeleteThings,
@@ -26,6 +28,7 @@ const editorModeLabels = {
 	[EditorMode.DeleteThings]: 'Delete Things',
 	[EditorMode.SetSpawnPoint]: 'Set Spawn Point',
 	[EditorMode.CreateBomb]: 'Create Bomb',
+	[EditorMode.CreateDecoration]: 'Create Decoration',
 	[EditorMode.AddCheckpoint]: 'Add Checkpoint',
 	[EditorMode.SetGoal]: 'Set Goal',
 	[EditorMode.AddBaddie]: 'Add Baddie',
@@ -49,6 +52,7 @@ export default class LevelEditor extends Module {
 	private deleteThingsTool: DeleteThingsTool;
 	private setSpawnPointTool: SetSpawnPointTool;
 	private createBombTool: CreateBombTool;
+	private createDecorationTool: CreateDecorationTool;
 	private createCheckpointTool: CreateCheckpointTool;
 	private setGoalTool: SetGoalTool;
 	private createWalkerSpawnerTool: CreateWalkerSpawnerTool;
@@ -65,6 +69,8 @@ export default class LevelEditor extends Module {
 			this.addTransientModule(CreateCheckpointTool);
 		this.setSpawnPointTool = this.addTransientModule(SetSpawnPointTool);
 		this.createBombTool = this.addTransientModule(CreateBombTool);
+		this.createDecorationTool =
+			this.addTransientModule(CreateDecorationTool);
 		this.setGoalTool = this.addTransientModule(SetGoalTool);
 		this.deleteThingsTool = this.addTransientModule(DeleteThingsTool);
 		this.createWalkerSpawnerTool = this.addTransientModule(
@@ -79,6 +85,8 @@ export default class LevelEditor extends Module {
 		this.createWallTool.active = this.#mode === EditorMode.BuildWalls;
 		this.setSpawnPointTool.active = this.#mode === EditorMode.SetSpawnPoint;
 		this.createBombTool.active = this.#mode === EditorMode.CreateBomb;
+		this.createDecorationTool.active =
+			this.#mode === EditorMode.CreateDecoration;
 		this.createCheckpointTool.active =
 			this.#mode === EditorMode.AddCheckpoint;
 		this.deleteThingsTool.active = this.#mode === EditorMode.DeleteThings;
