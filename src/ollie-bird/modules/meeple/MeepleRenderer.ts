@@ -1,5 +1,4 @@
 import { toss } from 'toss-expression';
-import z from 'zod';
 import contextCheckpoint from '../../../contextCheckpoint';
 import GameObject from '../../core/GameObject';
 import Vec2 from '../../core/math/Vec2';
@@ -8,9 +7,6 @@ import '../../core/monad/OptionResultInterop';
 import type Sprite from '../../core/Sprite';
 import Resources from '../../Resources';
 import MeepleBehavior from './MeepleBehavior';
-
-const meepleRendererDtoSchema = z.object({});
-export type MeepleRendererDto = z.input<typeof meepleRendererDtoSchema>;
 
 export default class MeepleRenderer extends Module {
 	static readonly displayName: string = 'MeepleRenderer';
@@ -130,10 +126,6 @@ export default class MeepleRenderer extends Module {
 		}
 
 		super.render(context);
-	}
-
-	serialize(): MeepleRendererDto {
-		return {};
 	}
 
 	static {
