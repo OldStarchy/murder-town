@@ -1,9 +1,15 @@
 import type { Axis } from './Axis';
+import type Axis2d from './Axis2d';
 import type { Button } from './Button';
 import type { Pointer } from './Pointer';
 import Gamepad from './gamepad/Gamepad';
 import Keyboard from './keyboard/Keyboard';
 import Mouse from './mouse/Mouse';
+
+type Schema = Record<
+	string,
+	Button | Axis | Axis2d | Pointer | GamepadHapticActuator
+>;
 
 /**
  * Handles input devices that can provide user inputs to the game.
@@ -137,10 +143,7 @@ export default class Input implements Disposable {
 		return pointer;
 	}
 
-	#schemas: Record<
-		string,
-		Record<string, Button | Axis | Pointer | GamepadHapticActuator>
-	> = {};
+	#schemas: Record<string, Schema> = {};
 
 	/**
 	 * Defines a schema (ie. collection of related inputs) with a given name.
@@ -148,12 +151,7 @@ export default class Input implements Disposable {
 	 * Schemas can also include {@link GamepadHapticActuator}s, which can be
 	 * used to trigger gamepad vibrations.
 	 */
-	defineSchema<
-		T extends Record<
-			string,
-			Button | Axis | Pointer | GamepadHapticActuator
-		>,
-	>(name: string, schema: T): void {
+	defineSchema<T extends Schema>(name: string, schema: T): void {
 		this.#schemas[name] = schema;
 	}
 
@@ -163,12 +161,7 @@ export default class Input implements Disposable {
 	 * No type-checking is done, so its up to you that the returned schema is of
 	 * the expected shape.
 	 */
-	getSchema<
-		T extends Record<
-			string,
-			Button | Axis | Pointer | GamepadHapticActuator
-		>,
-	>(name: string): T {
+	getSchema<T extends Schema>(name: string): T {
 		const schema = this.#schemas[name];
 		if (!schema) {
 			throw new Error(`Schema "${name}" is not defined`);
