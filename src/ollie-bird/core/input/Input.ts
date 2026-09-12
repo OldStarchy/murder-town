@@ -4,6 +4,7 @@ import type { Button } from './Button';
 import type { Pointer } from './Pointer';
 import Gamepad from './gamepad/Gamepad';
 import Keyboard from './keyboard/Keyboard';
+import Manual from './manual/Manual';
 import Mouse from './mouse/Mouse';
 
 type Schema = Record<
@@ -56,6 +57,7 @@ export default class Input implements Disposable {
 	readonly keyboard = new Keyboard();
 	readonly mouse = new Mouse();
 	readonly gamepads = new Gamepad();
+	readonly manual = new Manual();
 
 	#disposableStack = new DisposableStack();
 
@@ -80,6 +82,7 @@ export default class Input implements Disposable {
 		this.keyboard.step();
 		this.mouse.step();
 		this.gamepads.step();
+		this.manual.step();
 	}
 
 	private readonly buttons: Record<string, Button> = {};

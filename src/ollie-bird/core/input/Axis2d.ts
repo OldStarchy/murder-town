@@ -4,10 +4,10 @@ import type { Axis } from './Axis';
 /**
  * A pair of axes
  */
-export default class Axis2d {
+export default class Axis2d<T extends Axis = Axis> {
 	constructor(
-		readonly x: Axis,
-		readonly y: Axis,
+		readonly x: T,
+		readonly y: T,
 	) {}
 
 	get vec(): Vec2 {
