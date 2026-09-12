@@ -164,6 +164,17 @@ export default class Vec2 implements Vec2Like, ReactInterop<Vec2Like> {
 		return new Vec2(this.#x, this.#y);
 	}
 
+	equals(other: Vec2Like): boolean {
+		return this.x == other.x && this.y == other.y;
+	}
+
+	nearlyEqual(other: Vec2Like, epsilon: number = 0.1) {
+		return (
+			Math.abs(this.x - other.x) < epsilon &&
+			Math.abs(this.y - other.y) < epsilon
+		);
+	}
+
 	[ReactInterop.set](data: Vec2Like): void {
 		this.#x = data.x;
 		this.#y = data.y;
