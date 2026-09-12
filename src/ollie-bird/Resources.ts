@@ -15,7 +15,22 @@ import fountainImage from '../assets/fountain.png';
 import meepleImage from '../assets/meeple.png';
 import sheet1Url from '../assets/sheet1.png';
 import treeImage from '../assets/tree.png';
-
+// import legTan from "../assets/leg-tan.png";
+// import shirtBurgundy from "../assets/shirt-burgundy.png";
+// import shirtCharcoal from "../assets/shirt-charcoal.png";
+// import shirtGray from "../assets/shirt-gray.png";
+import shirtNavy from '../assets/shirt-navy.png';
+// import shirtOlive from "../assets/shirt-olive.png";
+// import shirtPurple from "../assets/shirt-purple.png";
+// import headDark from "../assets/head-dark.png";
+// import headFair from "../assets/head-fair.png";
+// import headLight from "../assets/head-light.png";
+import headMedium from '../assets/head-medium.png';
+// import headTan from "../assets/head-tan.png";
+// import legDark from "../assets/leg-dark.png";
+// import legFair from "../assets/leg-fair.png";
+// import legLight from "../assets/leg-light.png";
+import legMedium from '../assets/leg-medium.png';
 import Sprite from './core/Sprite';
 
 class ResourceMap<T> {
@@ -116,6 +131,9 @@ export default class Resources {
 		this.instance.sprite.register('tree', new Sprite(treeImage));
 		this.instance.sprite.register('fountain', new Sprite(fountainImage));
 		this.instance.sprite.register('bush', new Sprite(bushImage));
+		this.instance.sprite.register('legMedium', new Sprite(legMedium));
+		this.instance.sprite.register('headMedium', new Sprite(headMedium));
+		this.instance.sprite.register('shirtNavy', new Sprite(shirtNavy));
 
 		this.instance.birdSpriteSet.register(
 			'birdFrontSprites',

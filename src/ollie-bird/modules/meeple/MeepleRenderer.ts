@@ -17,9 +17,9 @@ export default class MeepleRenderer extends Module {
 
 	static readonly raiseToSpreadTime = 0.15;
 
-	static readonly sprite: Sprite = Resources.instance.sprite.get('meeple');
-
-	private sprite: Sprite;
+	private spriteHead: Sprite;
+	private spriteBody: Sprite;
+	private spriteFeet: Sprite;
 
 	private get position(): Vec2 {
 		return this.owner.transform.position;
@@ -29,7 +29,9 @@ export default class MeepleRenderer extends Module {
 
 	constructor(owner: GameObject) {
 		super(owner);
-		this.sprite = MeepleRenderer.sprite;
+		this.spriteBody = Resources.instance.sprite.get('shirtNavy');
+		this.spriteHead = Resources.instance.sprite.get('headMedium');
+		this.spriteFeet = Resources.instance.sprite.get('legMedium');
 	}
 
 	override initialize() {
@@ -55,31 +57,40 @@ export default class MeepleRenderer extends Module {
 	}
 
 	override render(context: CanvasRenderingContext2D) {
-		const sprite = this.sprite;
-
 		using _ = contextCheckpoint(context);
 		context.translate(...this.position.xy);
 
-		const stepHeight = 5;
-		const stepRotation = (5 * Math.PI) / 180;
-		switch (Math.floor(this.animationCycle * 4)) {
-			case 0:
-				break;
-			case 1:
-				context.translate(0, stepHeight);
-				context.rotate(stepRotation);
-				break;
-			case 2:
-				break;
-			case 3:
-				context.translate(0, stepHeight);
-				context.rotate(-stepRotation);
-				break;
+		{
+			using _2 = contextCheckpoint(context);
+
+			const stepHeight = 5;
+			const stepRotation = (5 * Math.PI) / 180;
+			const legApartDistance = 25;
+
+			context.translate(0, 90);
+			switch (Math.floor(this.animationCycle * 4)) {
+				case 0:
+					break;
+				case 1:
+					context.translate(0, stepHeight);
+					context.rotate(stepRotation);
+					break;
+				case 2:
+					break;
+				case 3:
+					context.translate(0, stepHeight);
+					context.rotate(-stepRotation);
+					break;
+			}
+
+			this.spriteFeet.blit(context, -legApartDistance - 10, -10, 20, 50);
+			this.spriteFeet.blit(context, legApartDistance - 10, -10, 20, 50);
 		}
-		// if (flip) {
-		// 	context.scale(-1, 1);
-		// }
-		sprite.blit(context, -50, -50, 100, 100);
+		this.spriteBody.blit(context, -50, 0, 100, 100);
+		this.spriteHead.blit(context, -45, -80, 90, 90);
+		//These are really arms
+		this.spriteFeet.blit(context, -40, 30, 20, 50);
+		this.spriteFeet.blit(context, 20, 30, 20, 50);
 
 		super.render(context);
 	}
