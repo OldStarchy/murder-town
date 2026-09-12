@@ -1,7 +1,7 @@
 import { toss } from 'toss-expression';
 import z from 'zod';
 import onChange from '../../../react-interop/onChange';
-import { TAG_DEADLY, TAG_GOAL } from '../../const';
+import { CollisionLayer, TAG_DEADLY, TAG_GOAL } from '../../const';
 import GameObject from '../../core/GameObject';
 import Vec2 from '../../core/math/Vec2';
 import Module from '../../core/Module';
@@ -13,6 +13,7 @@ import type { MeepleControls } from '../../MeepleControls';
 import createExplosionPrefab from '../../prefabs/createExplosionPrefab';
 import Checkpoint from '../Checkpoint';
 import ExplosionBehavior from '../ExplosionBehavior';
+import TriggerableAction from '../interaction/TriggerableAction';
 import LevelGameplayManager from '../LevelGameplayManager';
 
 const meepleBehaviorDtoSchema = z.object({
@@ -48,7 +49,21 @@ export default class MeepleBehavior extends Module {
 					`${MeepleBehavior.displayName} requires a ${LevelGameplayManager.displayName} in the scene`,
 				),
 			);
+
+		this.personalHitbox = this.addModule(CircleCollider2d);
+		this.personalHitbox.radius = 40;
+		this.personalHitbox.collisionMask =
+			CollisionLayer.Meeple | CollisionLayer.Trigger;
+
+		this.interactionHitbox = this.addModule(CircleCollider2d);
+		this.interactionHitbox.radius = 90;
+		this.interactionHitbox.collisionMask = CollisionLayer.None;
+
+		this.addModule(TriggerableAction, () => this.handleInteractedWith());
 	}
+
+	personalHitbox: CircleCollider2d;
+	interactionHitbox: CircleCollider2d;
 
 	controls: MeepleControls = this.game.input.getSchema<MeepleControls>(
 		`Player ${this.playerIndex + 1}`,
@@ -58,7 +73,17 @@ export default class MeepleBehavior extends Module {
 		this.paused = !this.paused;
 	}
 
-	speed = 2.5;
+	#dead = false;
+	get dead() {
+		return this.#dead;
+	}
+
+	private handleInteractedWith() {
+		if (this.#dead) return;
+		this.die();
+	}
+
+	speed = 4.5;
 
 	protected handleInput() {
 		this.velocity.copy(
@@ -72,10 +97,29 @@ export default class MeepleBehavior extends Module {
 				strongMagnitude: 1.0,
 				weakMagnitude: 1.0,
 			});
+
+			const objectInTrigger = this.game
+				.getObjects()
+				.filter((go) => go != this.owner)
+				.filter(
+					Collider2d.collidingWithCollider(
+						this.interactionHitbox,
+						CollisionLayer.Trigger,
+					),
+				)
+				.take(1)
+				.toArray()[0];
+
+			if (objectInTrigger) {
+				objectInTrigger
+					.getModulesByType(TriggerableAction)
+					.forEach((m) => m.activate());
+			}
 		}
 
 		this.position.x += this.velocity.x;
 		this.position.y += this.velocity.y;
+		this.interactionHitbox.center.copy(this.velocity.scale(10));
 	}
 
 	protected checkObjCollisions() {
@@ -129,6 +173,9 @@ export default class MeepleBehavior extends Module {
 		if (this.paused) {
 			return;
 		}
+		if (this.#dead) {
+			return;
+		}
 
 		this.handleInput();
 		this.checkOutOfBounds();
@@ -155,7 +202,6 @@ export default class MeepleBehavior extends Module {
 	}
 
 	die() {
-		this.levelGameplayManager.handlePlayerDied(this.owner);
 		this.controls.Vibrate?.playEffect('dual-rumble', {
 			duration: 600,
 			startDelay: 0,
@@ -164,7 +210,10 @@ export default class MeepleBehavior extends Module {
 		});
 
 		this.createExplosion(...this.position.xy, 10, 50, 2);
-		this.owner.destroy();
+
+		this.#dead = true;
+		this.velocity.set(0, 0);
+		setTimeout(() => (this.#dead = false), 5000);
 	}
 
 	serialize(): MeepleBehaviorDto {

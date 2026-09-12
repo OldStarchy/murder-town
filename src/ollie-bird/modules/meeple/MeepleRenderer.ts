@@ -41,11 +41,23 @@ export default class MeepleRenderer extends Module {
 	}
 
 	private animationCycle = 0;
+	private actionAnimation = 0;
 
 	override update() {
 		super.update();
 
 		this.owner.layer = this.transform.position.y;
+
+		if (this.control.controls.Interact.isPressed) this.actionAnimation = 0;
+
+		if (this.control.dead) {
+			this.actionAnimation = -1;
+		}
+		if (this.actionAnimation > -1) {
+			const rate = this.game.secondsPerFrame / 0.5;
+			this.actionAnimation += rate;
+			if (this.actionAnimation > 1) this.actionAnimation = -1;
+		}
 
 		const movement = Math.sign(
 			this.control.velocity.x || this.control.velocity.y,
@@ -62,6 +74,12 @@ export default class MeepleRenderer extends Module {
 		using _ = contextCheckpoint(context);
 		context.translate(...this.position.xy);
 
+		context.translate(0, -90);
+		if (this.control.dead) {
+			context.translate(0, 90);
+			context.rotate(Math.PI / 2);
+			context.translate(0, -90);
+		}
 		{
 			using _2 = contextCheckpoint(context);
 
@@ -91,8 +109,25 @@ export default class MeepleRenderer extends Module {
 		this.spriteBody.blit(context, -50, 0, 100, 100);
 		this.spriteHead.blit(context, -45, -80, 90, 90);
 		//These are really arms
-		this.spriteFeet.blit(context, -40, 30, 20, 50);
-		this.spriteFeet.blit(context, 20, 30, 20, 50);
+
+		{
+			using _ = contextCheckpoint(context);
+			context.translate(-30, 40);
+			context.rotate(Math.PI / 4);
+			if (this.control.dead) context.rotate(Math.PI / 2);
+			if (this.actionAnimation > -1)
+				context.rotate(Math.PI * 2 * this.actionAnimation);
+			this.spriteFeet.blit(context, -10, -10, 20, 50);
+		}
+		{
+			using _ = contextCheckpoint(context);
+			context.translate(30, 40);
+			context.rotate(-Math.PI / 4);
+			if (this.control.dead) context.rotate(-Math.PI / 2);
+			if (this.actionAnimation > -1)
+				context.rotate(-Math.PI * 2 * this.actionAnimation);
+			this.spriteFeet.blit(context, -10, -10, 20, 50);
+		}
 
 		super.render(context);
 	}
