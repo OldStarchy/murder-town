@@ -15,6 +15,7 @@ import Checkpoint from '../Checkpoint';
 import ExplosionBehavior from '../ExplosionBehavior';
 import TriggerableAction from '../interaction/TriggerableAction';
 import LevelGameplayManager from '../LevelGameplayManager';
+import MeepleNpcController from './MeepleNpcController';
 
 const meepleBehaviorDtoSchema = z.object({
 	playerIndex: z.union([z.literal(0), z.literal(1)]),
@@ -34,6 +35,7 @@ export default class MeepleBehavior extends Module {
 				`Player ${self.playerIndex + 1}`,
 			)),
 	)
+	//TODO: Handle NPC controls somehow
 	accessor playerIndex: 0 | 1 = 0;
 
 	private get position(): Vec2 {
@@ -62,12 +64,18 @@ export default class MeepleBehavior extends Module {
 		this.addModule(TriggerableAction, () => this.handleInteractedWith());
 	}
 
+	protected override initialize(): void {
+		this.controls =
+			this.getModule(MeepleNpcController)?.controls ??
+			this.game.input.getSchema<MeepleControls>(
+				`Player ${this.playerIndex + 1}`,
+			);
+	}
+
 	personalHitbox: CircleCollider2d;
 	interactionHitbox: CircleCollider2d;
 
-	controls: MeepleControls = this.game.input.getSchema<MeepleControls>(
-		`Player ${this.playerIndex + 1}`,
-	);
+	controls!: MeepleControls;
 
 	togglePause() {
 		this.paused = !this.paused;

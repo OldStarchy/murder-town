@@ -124,6 +124,30 @@ class MurderTownGame extends BaseGame {
 					},
 				],
 			});
+
+			for (let i = 0; i < 48; i++) {
+				this.spawnPrefab({
+					version: 1,
+					layer: Layer.Player,
+					tags: [TAG_PLAYER],
+					name: 'Player 2',
+					transform: [400, 400],
+					modules: [
+						{
+							$type: 'MeepleNpcController',
+						},
+						{
+							$type: 'MeepleRenderer',
+						},
+						{
+							$type: 'MeepleBehavior',
+							data: {
+								playerIndex: 1,
+							} satisfies MeepleBehaviorDto,
+						},
+					],
+				});
+			}
 		});
 	}
 }
