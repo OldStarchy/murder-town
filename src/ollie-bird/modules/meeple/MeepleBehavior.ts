@@ -15,13 +15,13 @@ import Checkpoint from '../Checkpoint';
 import ExplosionBehavior from '../ExplosionBehavior';
 import LevelGameplayManager from '../LevelGameplayManager';
 
-const meepleControlDtoSchema = z.object({
+const meepleBehaviorDtoSchema = z.object({
 	playerIndex: z.union([z.literal(0), z.literal(1)]),
 });
-export type MeepleControlDto = z.input<typeof meepleControlDtoSchema>;
+export type MeepleBehaviorDto = z.input<typeof meepleBehaviorDtoSchema>;
 
-export default class MeepleControl extends Module {
-	static readonly displayName: string = 'Meeple Control';
+export default class MeepleBehavior extends Module {
+	static readonly displayName: string = 'Meeple Behavior';
 
 	public readonly velocity: Vec2 = Vec2.zero;
 
@@ -45,7 +45,7 @@ export default class MeepleControl extends Module {
 			this.owner.game.findModuleByType(LevelGameplayManager) ??
 			toss(
 				new Error(
-					`${MeepleControl.displayName} requires a ${LevelGameplayManager.displayName} in the scene`,
+					`${MeepleBehavior.displayName} requires a ${LevelGameplayManager.displayName} in the scene`,
 				),
 			);
 	}
@@ -167,7 +167,7 @@ export default class MeepleControl extends Module {
 		this.owner.destroy();
 	}
 
-	serialize(): MeepleControlDto {
+	serialize(): MeepleBehaviorDto {
 		return {
 			playerIndex: this.playerIndex,
 		};
@@ -177,11 +177,11 @@ export default class MeepleControl extends Module {
 		_obj: unknown,
 		context: { gameObject: GameObject },
 	): Result<Module, string> {
-		const parseResult = meepleControlDtoSchema.safeParse(_obj);
+		const parseResult = meepleBehaviorDtoSchema.safeParse(_obj);
 
 		if (!parseResult.success) {
 			return Err(
-				`Failed to deserialize MeepleControl: ${parseResult.error.message}`,
+				`Failed to deserialize MeepleBehavior: ${parseResult.error.message}`,
 			);
 		}
 
@@ -193,6 +193,6 @@ export default class MeepleControl extends Module {
 	}
 
 	static {
-		Module.serializer.registerSerializationType('MeepleControl', this);
+		Module.serializer.registerSerializationType('MeepleBehavior', this);
 	}
 }

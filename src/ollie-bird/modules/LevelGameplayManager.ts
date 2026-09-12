@@ -8,7 +8,7 @@ import Module from '../core/Module';
 import { Err, Ok, Result } from '../core/monad/Result';
 import CheckpointManager from './CheckpointManager';
 import GameTimer from './GameTimer';
-import MeepleControl from './meeple/MeepleControl';
+import MeepleBehavior from './meeple/MeepleBehavior';
 
 export type LevelGameplayManagerEvents = EventMap<{
 	levelInit: void;
@@ -39,7 +39,7 @@ export default class LevelGameplayManager extends Module {
 	override update(): void {
 		if (this.#pauseKey.isPressed) {
 			this.game
-				.findModulesByType(MeepleControl)
+				.findModulesByType(MeepleBehavior)
 				.forEach((b) => b.togglePause());
 		}
 

@@ -7,7 +7,7 @@ import Module from '../../core/Module';
 import '../../core/monad/OptionResultInterop';
 import type Sprite from '../../core/Sprite';
 import Resources from '../../Resources';
-import MeepleControl from './MeepleControl';
+import MeepleBehavior from './MeepleBehavior';
 
 const meepleRendererDtoSchema = z.object({});
 export type MeepleRendererDto = z.input<typeof meepleRendererDtoSchema>;
@@ -25,7 +25,7 @@ export default class MeepleRenderer extends Module {
 		return this.owner.transform.position;
 	}
 
-	private control!: MeepleControl;
+	private control!: MeepleBehavior;
 
 	constructor(owner: GameObject) {
 		super(owner);
@@ -34,7 +34,7 @@ export default class MeepleRenderer extends Module {
 
 	override initialize() {
 		this.control =
-			this.getModule(MeepleControl) ??
+			this.getModule(MeepleBehavior) ??
 			toss('MeepleRenderer needs MeepleControl');
 	}
 

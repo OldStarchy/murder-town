@@ -1,7 +1,7 @@
 import { Layer, TAG_EDITOR_OBJECT, TAG_PLAYER } from './const';
 import BaseGame from './core/BaseGame';
 import { MeepleControls } from './MeepleControls';
-import type { MeepleControlDto } from './modules/meeple/MeepleControl';
+import type { MeepleBehaviorDto } from './modules/meeple/MeepleBehavior';
 
 // Eager-load all the modules so that they're registered in the serializer and available for spawning prefabs
 import.meta.glob('./modules/**/*.ts', { eager: true });
@@ -93,10 +93,10 @@ class MurderTownGame extends BaseGame {
 						$type: 'MeepleRenderer',
 					},
 					{
-						$type: 'MeepleControl',
+						$type: 'MeepleBehavior',
 						data: {
 							playerIndex: 0,
-						} satisfies MeepleControlDto,
+						} satisfies MeepleBehaviorDto,
 					},
 				],
 			});
