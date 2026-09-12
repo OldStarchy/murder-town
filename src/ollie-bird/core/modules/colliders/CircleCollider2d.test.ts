@@ -5,7 +5,7 @@ import CircleCollider2d from './CircleCollider2d';
 describe('CircleCollider2d', () => {
 	test('serialize', () => {
 		const collider = new CircleCollider2d({} as GameObject);
-		collider.center = { x: 5, y: 10 };
+		collider.center.set(5, 10);
 		collider.radius = 15;
 
 		const dto = collider.serialize();
