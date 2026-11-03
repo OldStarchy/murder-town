@@ -27,7 +27,7 @@
     "the-new-css-reset": "^1.11.3",
     "toss-expression": "^0.1.2",
     "use-resize-observer": "^9.1.0",
-    "zod": "^4.3.6"
+    "zod": "^4.6.6"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.28.0",
